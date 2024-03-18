@@ -44,7 +44,7 @@ const schemaWithResolvers = addResolversToSchema({
 const app = express();
 
 /* istanbul ignore next */
-// @ts-expect-error
+// @ts-ignore
 if (global.__coverage__) {
   require("@cypress/code-coverage/middleware/express")(app);
 }
@@ -55,7 +55,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(
-  // @ts-expect-error
   session({
     secret: "session secret",
     resave: false,
@@ -63,11 +62,9 @@ app.use(
     unset: "destroy",
   })
 );
-// @ts-expect-error
 app.use(passport.initialize());
 app.use(passport.session());
 
-// @ts-expect-error
 app.use(paginate.middleware(+process.env.PAGINATION_PAGE_SIZE!));
 
 /* istanbul ignore next */

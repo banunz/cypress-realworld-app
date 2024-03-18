@@ -4,20 +4,12 @@ import axios from "axios";
 import dotenv from "dotenv";
 import Promise from "bluebird";
 import codeCoverageTask from "@cypress/code-coverage/task";
-import { devServer } from "@cypress/vite-dev-server";
 import { defineConfig } from "cypress";
-import { mergeConfig, loadEnv } from "vite";
 
 dotenv.config({ path: ".env.local" });
 dotenv.config();
 
-let awsConfig = {
-  default: undefined,
-};
-
-try {
-  awsConfig = require(path.join(__dirname, "./aws-exports-es5.js"));
-} catch (e) {}
+const awsConfig = require(path.join(__dirname, "./aws-exports-es5.js"));
 
 module.exports = defineConfig({
   projectId: "7s5okt",
@@ -60,28 +52,9 @@ module.exports = defineConfig({
     googleClientSecret: process.env.VITE_GOOGLE_CLIENT_SECRET,
   },
   component: {
-    devServer(devServerConfig) {
-      const viteConfig = require("./vite.config.ts");
-      const conf = {
-        define: {
-          "process.env": loadEnv("development", process.cwd(), "VITE"),
-        },
-        server: {
-          /**
-           * start the CT dev server on a different port than the full RWA
-           * so users can switch between CT and E2E testing without having to
-           * stop/start the RWA dev server.
-           */
-          port: 3002,
-        },
-      };
-
-      const resolvedViteConfig = mergeConfig(viteConfig, conf);
-      return devServer({
-        ...devServerConfig,
-        framework: "react",
-        viteConfig: resolvedViteConfig,
-      });
+    devServer: {
+      framework: "react",
+      bundler: "vite",
     },
     specPattern: "src/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "cypress/support/component.ts",
