@@ -73,12 +73,12 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       const testDataApiEndpoint = `${config.env.apiUrl}/testData`;
 
+
       const queryDatabase = ({ entity, query }, callback) => {
         const fetchData = async (attrs) => {
           const { data } = await axios.get(`${testDataApiEndpoint}/${entity}`);
           return callback(data, attrs);
         };
-
         return Array.isArray(query) ? Promise.map(query, fetchData) : fetchData(query);
       };
 
